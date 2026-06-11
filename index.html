@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>追星搭子 · 拼车社区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+            padding-bottom: 70px;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ========= 顶部导航 ========= */
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            z-index: 10;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ff99b9;
+        }
+        .publish-btn {
+            background: #ffb6c7;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(255, 182, 199, 0.3);
+        }
+        .publish-btn:hover {
+            background: #ff8fab;
+            transform: scale(0.96);
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, #ffe4ed 0%, #ffd9e4 100%);
+            border-radius: 24px;
+            padding: 20px 18px;
+            margin: 16px 0 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(255, 182, 199, 0.1);
+        }
+        .banner-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #b84c6e;
+        }
+        .banner-icon {
+            font-size: 36px;
+        }
+
+        /* 板块标题 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 20px 0 12px 0;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+            padding-left: 10px;
+        }
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 16px;
+            background: #ffb6c7;
+            border-radius: 4px;
+        }
+        .more-link {
+            font-size: 13px;
+            color: #ff99b9;
+            cursor: pointer;
+        }
+
+        /* 拼车卡片网格 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        @media (min-width: 560px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            transition: all 0.25s ease;
+            border: 1px solid #fce7f0;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+        }
+        .card-artist {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+        .card-album {
+            font-size: 14px;
+            color: #777;
+            margin: 4px 0 8px 0;
+        }
+        .card-progress {
+            font-size: 13px;
+            color: #ff8fab;
+            background: #fff0f3;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin: 8px 0;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .price {
+            font-weight: 700;
+            color: #ff6699;
+            font-size: 18px;
+        }
+        .contact-btn {
+            background: transparent;
+            border: 1px solid #ffb6c7;
+            color: #ff8fab;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .contact-btn:hover {
+            background: #ffb6c7;
+            color: white;
+        }
+
+        /* 时间线样式（专辑上新） */
+        .timeline {
+            margin: 12px 0 20px;
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .timeline-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .timeline-platform {
+            font-size: 12px;
+            color: #ff99b9;
+            background: #fff0f3;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+            width: fit-content;
+            margin-bottom: 6px;
+        }
+        .timeline-title {
+            font-weight: 600;
+        }
+        .timeline-artist {
+            font-size: 13px;
+            color: #888;
+        }
+        .timeline-time {
+            font-size: 12px;
+            color: #bbb;
+        }
+        .go-pinche {
+            background: #fff0f3;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #ff8fab;
+            cursor: pointer;
+        }
+
+        /* 底部Tab栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0 14px;
+            border-top: 1px solid #f0f0f0;
+            z-index: 10;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-item.active {
+            color: #ff8fab;
+            font-weight: 500;
+        }
+        .tab-icon {
+            font-size: 22px;
+        }
+
+        /* 弹窗遮罩 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(3px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-card {
+            background: white;
+            width: 85%;
+            max-width: 340px;
+            border-radius: 32px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ffe0e8;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+        .submit-form {
+            background: #ffb6c7;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .owner-avatar {
+            font-size: 48px;
+            text-align: center;
+        }
+        .flex-btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-pink {
+            background: #ffb6c7;
+            border: none;
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ffb6c7;
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            color: #ff8fab;
+            cursor: pointer;
+        }
+
+        /* 聊天页面视图 */
+        .chat-view, .message-list-view, .my-view {
+            display: none;
+        }
+        .active-view {
+            display: block;
+        }
+        .chat-header {
+            padding: 12px;
+            background: white;
+            border-bottom: 1px solid #ffe0e8;
+            font-weight: 600;
+        }
+        .chat-messages {
+            height: 55vh;
+            overflow-y: auto;
+            padding: 12px;
+            background: #fef9fb;
+        }
+        .msg-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        .msg-bubble {
+            background: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            max-width: 80%;
+            align-self: flex-start;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+        .msg-input-area {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+        }
+        .msg-input {
+            flex: 1;
+            border: 1px solid #ffe0e8;
+            border-radius: 30px;
+            padding: 8px 14px;
+        }
+        .send-btn {
+            background: #ffb6c7;
+            border: none;
+            margin-left: 8px;
+            padding: 0 16px;
+            border-radius: 30px;
+            color: white;
+        }
+        .dialog-item {
+            padding: 14px;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .dialog-avatar {
+            font-size: 36px;
+        }
+        .my-info {
+            background: #fff5f8;
+            padding: 16px;
+            border-radius: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .credit-star {
+            color: #ffb347;
+        }
+        .my-list-item {
+            background: #fafafa;
+            padding: 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <div class="logo">✨追星搭子</div>
+    <button class="publish-btn" id="openPublishBtn">发布拼车</button>
+</div>
+
+<div class="container" id="mainContent">
+    <!-- 首页视图 -->
+    <div id="homeView" class="active-view">
+        <div class="banner">
+            <span class="banner-text">和同担一起拼，邮费省一半</span>
+            <span class="banner-icon">🚗💨</span>
+        </div>
+        <div class="section-header">
+            <div class="section-title">正在拼车</div>
+            <div class="more-link" id="moreCardsLink">查看更多 →</div>
+        </div>
+        <div id="cardsContainer" class="cards-grid"></div>
+
+        <div class="section-header" style="margin-top: 20px;">
+            <div class="section-title">最新专辑上新</div>
+        </div>
+        <div id="timelineContainer" class="timeline"></div>
+    </div>
+
+    <!-- 消息列表页（对话列表） -->
+    <div id="messageListView" class="message-list-view">
+        <div style="padding: 16px; font-weight: 600; border-bottom: 1px solid #ffe0e8;">消息</div>
+        <div id="dialogsList"></div>
+    </div>
+
+    <!-- 聊天详情页（动态替换） -->
+    <div id="chatDetailView" class="chat-view">
+        <div class="chat-header" id="chatHeader">聊天</div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="msg-input-area">
+            <input type="text" id="msgInput" class="msg-input" placeholder="说句话～">
+            <button id="sendMsgBtn" class="send-btn">发送</button>
+        </div>
+    </div>
+
+    <!-- 我的页面 -->
+    <div id="myView" class="my-view">
+        <div style="padding: 16px 0 8px;">我的</div>
+        <div id="myInfoArea" class="my-info"></div>
+        <div class="section-title" style="margin-bottom: 12px;">我发布的拼车</div>
+        <div id="myPublishedList"></div>
+        <div class="section-title" style="margin-top: 20px; margin-bottom: 12px;">我上车的拼车</div>
+        <div id="myJoinedList"></div>
+    </div>
+</div>
+
+<div class="tab-bar">
+    <div class="tab-item active" data-tab="home">🏠<span>首页</span></div>
+    <div class="tab-item" data-tab="message">💬<span>消息</span></div>
+    <div class="tab-item" data-tab="my">👤<span>我的</span></div>
+</div>
+
+<!-- 车主主页弹窗 -->
+<div id="ownerModal" class="modal-mask">
+    <div class="modal-card">
+        <span class="close-modal" id="closeOwnerModal">&times;</span>
+        <div id="ownerModalContent"></div>
+        <div class="flex-btns">
+            <button id="modalMsgBtn" class="btn-pink">私信车主</button>
+            <button id="modalJoinBtn" class="btn-outline">立即上车</button>
+        </div>
+    </div>
+</div>
+
+<!-- 发布拼车弹窗 -->
+<div id="publishModal" class="modal-mask">
+    <div class="modal-card">
+        <span class="close-modal" id="closePublishModal">&times;</span>
+        <h4 style="margin-bottom: 16px;">发布拼车</h4>
+        <div class="form-group"><label>专辑名</label><input id="pubAlbum" placeholder="例: Drama"></div>
+        <div class="form-group"><label>艺人</label><input id="pubArtist" placeholder="例: aespa"></div>
+        <div class="form-group"><label>拼单价(元)</label><input id="pubPrice" type="number" placeholder="52"></div>
+        <div class="form-group"><label>国际邮费(元)</label><input id="pubIntlFee" placeholder="15"></div>
+        <div class="form-group"><label>国内邮费(元)</label><input id="pubDomFee" placeholder="8"></div>
+        <div class="form-group"><label>总人数</label><input id="pubTotal" type="number" placeholder="5"></div>
+        <button id="confirmPublishBtn" class="submit-form">确认发布</button>
+    </div>
+</div>
+
+<script>
+    // ---------- 模拟数据 ----------
+    let cardsData = [
+        { id: 1, artist: "aespa", album: "Drama", current: 3, total: 5, price: 52, intlFee: 12, domFee: 6, owner: { name: "车主张张", avatar: "🐱", credit: 4.8, wechat: "zz_001" }, joinedUsers: ["🐣"] },
+        { id: 2, artist: "时代少年团", album: "澳门周边", current: 2, total: 5, price: 88, intlFee: 18, domFee: 8, owner: { name: "小炸车主", avatar: "🐻", credit: 4.9, wechat: "sdsnt_01" }, joinedUsers: [] },
+        { id: 3, artist: "SEVENTEEN", album: "迷你12辑", current: 4, total: 5, price: 45, intlFee: 10, domFee: 5, owner: { name: "克拉车主", avatar: "🌸", credit: 5.0, wechat: "svt_car" }, joinedUsers: ["🐰"] },
+        { id: 4, artist: "张艺兴", album: "新专辑", current: 1, total: 5, price: 70, intlFee: 20, domFee: 8, owner: { name: "贝壳车主", avatar: "🐏", credit: 4.7, wechat: "lay_zyx" }, joinedUsers: [] }
+    ];
+    let timelineData = [
+        { platform: "Ktown4u", album: "IVE EMPATHY", artist: "IVE", time: "2小时前" },
+        { platform: "SMTOWN", album: "ROMANCE: UNTOLD", artist: "ENHYPEN", time: "5小时前" },
+        { platform: "Weverse", album: "Supernatural", artist: "NewJeans", time: "昨天" }
+    ];
+    // 消息对话列表（模拟）
+    let dialogs = [
+        { id: 1, ownerName: "车主张张", avatar: "🐱", lastMsg: "可以拼单哦~", chatHistory: [{ from: "owner", text: "你好，要拼aespa专辑吗？" }, { from: "me", text: "想上车！" }] },
+        { id: 2, ownerName: "小炸车主", avatar: "🐻", lastMsg: "周边还有位", chatHistory: [{ from: "owner", text: "澳门周边很快发货" }] }
+    ];
+    let currentChatDialog = null;      // 当前聊天对象id
+    let currentCardForModal = null;    // 当前查看的车主页面对应的卡片
+    let myPublished = [{ id: 999, artist: "ITZY", album: "BORN TO BE", price: 60, current: 2, total: 4 }];
+    let myJoined = [{ id: 888, artist: "aespa", album: "Drama", owner: "车主张张" }];
+
+    // 辅助函数：渲染所有
+    function renderCards() {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = cardsData.map(card => `
+            <div class="card">
+                <div class="card-artist">${card.artist}</div>
+                <div class="card-album">${card.album}</div>
+                <div class="card-progress">👥 ${card.current}/${card.total}人</div>
+                <div class="card-footer">
+                    <span class="price">¥${card.price}</span>
+                    <button class="contact-btn" data-id="${card.id}">联系车主</button>
+                </div>
+            </div>
+        `).join('');
+        // 绑定联系车主事件
+        document.querySelectorAll('.contact-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.dataset.id);
+                const card = cardsData.find(c => c.id === id);
+                if (card) showOwnerModal(card);
+            });
+        });
+    }
+
+    function renderTimeline() {
+        const tlContainer = document.getElementById('timelineContainer');
+        tlContainer.innerHTML = timelineData.map(item => `
+            <div class="timeline-item">
+                <div class="timeline-left">
+                    <span class="timeline-platform">${item.platform}</span>
+                    <span class="timeline-title">${item.album}</span>
+                    <span class="timeline-artist">${item.artist}</span>
+                    <span class="timeline-time">${item.time}</span>
+                </div>
+                <button class="go-pinche" data-album="${item.album}">去拼车 ➔</button>
+            </div>
+        `).join('');
+    }
+
+    // 车主主页弹窗
+    function showOwnerModal(card) {
+        currentCardForModal = card;
+        const modal = document.getElementById('ownerModal');
+        const contentDiv = document.getElementById('ownerModalContent');
+        contentDiv.innerHTML = `
+            <div class="owner-avatar">${card.owner.avatar}</div>
+            <div style="text-align:center; font-weight:600;">${card.owner.name}</div>
+            <div style="text-align:center; font-size:12px;">信用分 ${card.owner.credit} ⭐</div>
+            <div style="margin-top:16px;"><strong>${card.artist} - ${card.album}</strong></div>
+            <div>拼单价 ¥${card.price}</div>
+            <div>国际邮费 ¥${card.intlFee} | 国内邮费 ¥${card.domFee}</div>
+            <div>已上车 ${card.current}/${card.total} 人</div>
+        `;
+        modal.style.display = 'flex';
+    }
+
+    // 私信车主 -> 跳转消息tab并打开聊天
+    function openChatWithOwner(ownerName, ownerAvatar) {
+        // 切换到消息tab
+        switchTab('message');
+        // 查找或创建一个dialogs里的条目
+        let dialog = dialogs.find(d => d.ownerName === ownerName);
+        if (!dialog) {
+            dialog = {
+                id: Date.now(),
+                ownerName: ownerName,
+                avatar: ownerAvatar,
+                lastMsg: "开始聊天吧",
+                chatHistory: [{ from: "owner", text: "你好，有什么想问的？" }]
+            };
+            dialogs.push(dialog);
+            renderMessageList();
+        }
+        openChatDetail(dialog.id);
+    }
+
+    function openChatDetail(dialogId) {
+        const dialog = dialogs.find(d => d.id === dialogId);
+        if (!dialog) return;
+        currentChatDialog = dialog;
+        document.getElementById('chatHeader').innerHTML = `${dialog.avatar} ${dialog.ownerName}`;
+        renderChatMessages(dialog.chatHistory);
+        // 隐藏消息列表视图，显示聊天视图
+        document.getElementById('messageListView').style.display = 'none';
+        document.getElementById('chatDetailView').style.display = 'block';
+        document.getElementById('myView').style.display = 'none';
+        document.getElementById('homeView').style.display = 'none';
+        document.getElementById('chatDetailView').classList.add('active-view');
+        document.getElementById('messageListView').classList.remove('active-view');
+    }
+
+    function renderChatMessages(history) {
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = history.map(msg => `
+            <div class="msg-item">
+                <div class="msg-bubble" style="align-self: ${msg.from === 'me' ? 'flex-end' : 'flex-start'}; background: ${msg.from === 'me' ? '#ffe4ed' : '#fff'};">
+                    ${msg.text}
+                </div>
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('msgInput');
+        const text = input.value.trim();
+        if (!text || !currentChatDialog) return;
+        currentChatDialog.chatHistory.push({ from: "me", text: text });
+        currentChatDialog.lastMsg = text;
+        renderChatMessages(currentChatDialog.chatHistory);
+        input.value = '';
+        // 模拟车主回复（可选）
+        setTimeout(() => {
+            currentChatDialog.chatHistory.push({ from: "owner", text: "收到~ 稍后回复你" });
+            renderChatMessages(currentChatDialog.chatHistory);
+        }, 500);
+    }
+
+    function renderMessageList() {
+        const container = document.getElementById('dialogsList');
+        if (!container) return;
+        container.innerHTML = dialogs.map(d => `
+            <div class="dialog-item" data-dialog-id="${d.id}">
+                <div class="dialog-avatar">${d.avatar}</div>
+                <div style="flex:1">
+                    <div style="font-weight:600;">${d.ownerName}</div>
+                    <div style="font-size:12px; color:#888;">${d.lastMsg}</div>
+                </div>
+            </div>
+        `).join('');
+        document.querySelectorAll('.dialog-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const id = parseInt(el.dataset.dialogId);
+                openChatDetail(id);
+            });
+        });
+    }
+
+    function renderMyPage() {
+        const myInfoDiv = document.getElementById('myInfoArea');
+        myInfoDiv.innerHTML = `<span style="font-size:40px;">🐣</span><div><strong>小追星</strong><div>信用分 4.9 <span class="credit-star">⭐⭐⭐⭐⭐</span></div></div>`;
+        const publishedDiv = document.getElementById('myPublishedList');
+        publishedDiv.innerHTML = myPublished.map(p => `
+            <div class="my-list-item">${p.artist} - ${p.album} | ¥${p.price} (${p.current}/${p.total}人) <button class="contact-btn" style="padding:2px 12px;" data-del="${p.id}">删除</button></div>
+        `).join('');
+        const joinedDiv = document.getElementById('myJoinedList');
+        joinedDiv.innerHTML = myJoined.map(j => `
+            <div class="my-list-item">${j.artist} - ${j.album} (车主:${j.owner}) <button class="contact-btn" data-cancel="${j.id}">取消上车</button></div>
+        `).join('');
+    }
+
+    // 发布拼车逻辑
+    function publishNewCar() {
+        const album = document.getElementById('pubAlbum').value.trim();
+        const artist = document.getElementById('pubArtist').value.trim();
+        const price = parseInt(document.getElementById('pubPrice').value);
+        const intl = parseInt(document.getElementById('pubIntlFee').value) || 0;
+        const dom = parseInt(document.getElementById('pubDomFee').value) || 0;
+        const total = parseInt(document.getElementById('pubTotal').value);
+        if (!album || !artist || isNaN(price) || isNaN(total)) {
+            alert("请填写完整信息");
+            return;
+        }
+        const newId = Date.now();
+        const newCard = {
+            id: newId, artist, album, current: 1, total, price, intlFee: intl, domFee: dom,
+            owner: { name: "小追星", avatar: "🐣", credit: 4.9, wechat: "mycar" },
+            joinedUsers: []
+        };
+        cardsData.unshift(newCard);
+        renderCards();
+        myPublished.unshift({ id: newId, artist, album, price, current: 1, total });
+        renderMyPage();
+        document.getElementById('publishModal').style.display = 'none';
+        alert("发布成功！已在首页展示");
+        // 清空表单
+        document.getElementById('pubAlbum').value = '';
+        document.getElementById('pubArtist').value = '';
+        document.getElementById('pubPrice').value = '';
+        document.getElementById('pubIntlFee').value = '';
+        document.getElementById('pubDomFee').value = '';
+        document.getElementById('pubTotal').value = '';
+    }
+
+    // Tab切换
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        if (tab === 'home') {
+            document.querySelector('.tab-item[data-tab="home"]').classList.add('active');
+            document.getElementById('homeView').style.display = 'block';
+            document.getElementById('messageListView').style.display = 'none';
+            document.getElementById('chatDetailView').style.display = 'none';
+            document.getElementById('myView').style.display = 'none';
+        } else if (tab === 'message') {
+            document.querySelector('.tab-item[data-tab="message"]').classList.add('active');
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('messageListView').style.display = 'block';
+            document.getElementById('chatDetailView').style.display = 'none';
+            document.getElementById('myView').style.display = 'none';
+            renderMessageList();
+        } else if (tab === 'my') {
+            document.querySelector('.tab-item[data-tab="my"]').classList.add('active');
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('messageListView').style.display = 'none';
+            document.getElementById('chatDetailView').style.display = 'none';
+            document.getElementById('myView').style.display = 'block';
+            renderMyPage();
+        }
+    }
+
+    // 事件绑定
+    document.getElementById('openPublishBtn').onclick = () => document.getElementById('publishModal').style.display = 'flex';
+    document.getElementById('closePublishModal').onclick = () => document.getElementById('publishModal').style.display = 'none';
+    document.getElementById('confirmPublishBtn').onclick = publishNewCar;
+    document.getElementById('closeOwnerModal').onclick = () => document.getElementById('ownerModal').style.display = 'none';
+    document.getElementById('modalMsgBtn').onclick = () => {
+        if (currentCardForModal) {
+            const owner = currentCardForModal.owner;
+            openChatWithOwner(owner.name, owner.avatar);
+            document.getElementById('ownerModal').style.display = 'none';
+        }
+    };
+    document.getElementById('modalJoinBtn').onclick = () => {
+        if (currentCardForModal) {
+            alert("已发送上车申请，等待车主确认✨");
+            // 模拟更新current计数（演示效果）
+            if (currentCardForModal.current < currentCardForModal.total) {
+                currentCardForModal.current++;
+                renderCards();
+            }
+            document.getElementById('ownerModal').style.display = 'none';
+        }
+    };
+    document.getElementById('sendMsgBtn').onclick = sendMessage;
+    document.querySelectorAll('.tab-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+            const tab = el.dataset.tab;
+            switchTab(tab);
+        });
+    });
+    document.getElementById('moreCardsLink').addEventListener('click', () => alert("更多拼车正在赶来~ 敬请期待"));
+    // 初始化
+    renderCards();
+    renderTimeline();
+    renderMessageList();
+    renderMyPage();
+    switchTab('home');
+    // 全局遮罩点击关闭
+    window.onclick = function(e) {
+        if (e.target.classList.contains('modal-mask')) e.target.style.display = 'none';
+    }
+</script>
+</body>
+</html>
